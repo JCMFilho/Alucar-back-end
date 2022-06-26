@@ -72,9 +72,8 @@ public class VeiculoController {
 		
 	}
 	
-	@Operation(summary = "Atualizar veículo", description = "Atualiza um novo veículo e retorna 201 em caso de sucesso")
+	@Operation(summary = "Atualizar veículo", description = "Atualiza um veículo e retorna 201 em caso de sucesso")
 	@PutMapping("")
-	@ResponseStatus(HttpStatus.CREATED)
 	public Veiculo updateVeiculo(@RequestBody Veiculo veiculo){
 		return veiculo;
 	}
