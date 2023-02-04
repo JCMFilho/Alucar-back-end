@@ -2,6 +2,7 @@ package com.api.aluguelcarro.controller;
 
 import java.util.List;
 
+import com.api.aluguelcarro.exception.EmailSenderException;
 import com.api.aluguelcarro.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,16 +59,24 @@ public class UserController {
 		return userService.saveUser(usuario);
 	}
 
-	@Operation(summary = "Fazer login")
-	@GetMapping("/login")
-	@ResponseStatus(HttpStatus.OK)
-	public void login(@RequestParam("login") String login, @RequestParam("senha") String password) {
+
+	@Operation(summary = "Alterar senha")
+	@PostMapping("/change-password")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void changePassword(@RequestParam("email") String email, @RequestParam("senha") String senha) {
+		userService.changePassword(email,senha);
 	}
 
 	@Operation(summary = "Atualizar usuário", description = "Atualiza informações do usuário")
 	@PutMapping("")
 	public void updateUser(@RequestBody User user) {
 		userService.updateUser(user);
+	}
+
+	@Operation(summary = "Recuperar senha", description = "Recuperar a senha do usuário do sistema")
+	@PostMapping("/recover")
+	public int recoverPassword(@RequestBody String email) throws EmailSenderException {
+		return userService.recoverPassword(email);
 	}
 
 }

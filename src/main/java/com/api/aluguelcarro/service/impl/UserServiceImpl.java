@@ -2,12 +2,16 @@ package com.api.aluguelcarro.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import com.api.aluguelcarro.exception.EmailSenderException;
 import com.api.aluguelcarro.model.Role;
 import com.api.aluguelcarro.model.User;
 import com.api.aluguelcarro.model.repository.RoleRepository;
 import com.api.aluguelcarro.model.repository.UserRepository;
+import com.api.aluguelcarro.service.PasswordRecoveryService;
 import com.api.aluguelcarro.utils.Constants;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,9 @@ public class UserServiceImpl implements UserService {
 	RoleRepository roleRepository;
 	@Autowired
 	PasswordEncoder passwordEncoder;
+
+	@Autowired
+	PasswordRecoveryService emailService;
 
 	@Override
 	public List<UserDTO> getUsers() {
@@ -60,6 +67,29 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void updateUser(User user) {
 		repository.updateUser(user.getId(),user.getPhone(),user.getCpf(),user.getName());
+	}
+
+	@Override
+	public int recoverPassword(String email) throws EmailSenderException {
+		validateByEmail(email);
+		Random codeGenerator = new Random();
+		int code = codeGenerator.nextInt(1000000);
+		String messageBody = "O seu código para recuperar a senha é: " + code;
+		emailService.sendPasswordRecoveryEmail(email,"Recuperação de senha", messageBody);
+		return code;
+	}
+
+	@Override
+	public void changePassword(String email, String password) {
+		User usuario = repository.findByEmail(email);
+		usuario.setPassword(passwordEncoder.encode(password));
+		repository.save(usuario);
+	}
+
+	private void validateByEmail(String email) throws EmailSenderException {
+		if(StringUtils.isEmpty(email) || this.repository.findByEmail(email) == null){
+			throw new EmailSenderException("E-mail inválido ou não cadastrado");
+		}
 	}
 
 }
