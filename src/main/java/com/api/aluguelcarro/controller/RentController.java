@@ -1,22 +1,17 @@
 package com.api.aluguelcarro.controller;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.api.aluguelcarro.model.*;
+import com.api.aluguelcarro.service.IRentService;
+import com.api.aluguelcarro.utils.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.api.aluguelcarro.model.RentDTO;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,39 +22,46 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @CrossOrigin
 public class RentController {
 
+	@Autowired
+	private IRentService service;
+
 	@Operation(summary = "Buscar Aluguéis do usuário", description = "Busca todos os aluguéis do usuário.")
 	@GetMapping("/{id}")
+	@Secured({Constants.ROLE_CLIENT})
 	public List<RentDTO> searchRentsByUserId(@PathVariable("id") Integer id) {
-		RentDTO aluguel = new RentDTO();
-		aluguel.setDataAluguel("19/06/2022");
-		aluguel.setDataInicio("21/06/2022");
-		aluguel.setDataFim("23/06/2022");
-		aluguel.setStatus("CONCLUÍDO");
-		aluguel.setValorTotal(BigDecimal.valueOf(179.12));
-		aluguel.setId(1);
-		aluguel.setIdUsuario(23);
-		List<RentDTO> alugueis = new ArrayList<>();
-		alugueis.add(aluguel);
-		return alugueis;
+		return service.getRentsByUserId(id);
 	}
 
 	@Operation(summary = "Cadastra novo aluguel", description = "Cadastrar novo aluguel para o usuário informado")
 	@PostMapping("")
 	@ResponseStatus(HttpStatus.CREATED)
-	public RentDTO saveRent(@RequestBody RentDTO aluguel) {
-		return aluguel;
+	@Secured({Constants.ROLE_CLIENT})
+	public void saveRent(@RequestBody RentDTO aluguel) throws ParseException {
+		service.cadastrarAluguel(aluguel);
 	}
 
-	@Operation(summary = "Atualiza aluguel")
-	@PutMapping("")
-	public RentDTO updateRent(@RequestBody RentDTO aluguel) {
-		return aluguel;
-	}
 
 	@Operation(summary = "Cancela aluguel")
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void CancelRent(@PathVariable("id") Integer id) {
+	@Secured({Constants.ROLE_CLIENT,Constants.ROLE_ADMIN})
+	public void cancelRent(@PathVariable("id") Integer id) {
+		service.atualizarEstadoAluguel(id, StatusAluguel.CANCELADO);
 	}
 
+	@Operation(summary = "Concluí aluguel")
+	@DeleteMapping("/concluir/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@Secured({Constants.ROLE_ADMIN})
+	public void concluirAluguel(@PathVariable("id") Integer id) {
+		service.atualizarEstadoAluguel(id, StatusAluguel.CONCLUIDO);
+	}
+
+	@GetMapping("/filter")
+	@Secured({Constants.ROLE_ADMIN})
+	public List<RentListDTO> getRentListForManagement(@RequestParam(value = "dataInicial", required = false, defaultValue = "2000-01-01") String dataInicial,
+													  @RequestParam(value = "dataFinal", required = false, defaultValue = "2999-12-31") String dataFinal,
+													  @RequestParam(value = "nome", required = false, defaultValue = "") String nome) throws ParseException {
+		return service.getRentListForManagement(dataInicial,dataFinal,nome);
+	}
 }

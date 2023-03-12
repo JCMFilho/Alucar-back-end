@@ -1,5 +1,7 @@
 package com.api.aluguelcarro.model;
 
+import com.api.aluguelcarro.utils.DateUtil;
+
 import java.math.BigDecimal;
 
 public class RentDTO {
@@ -7,12 +9,59 @@ public class RentDTO {
 	private Integer id;
 	private Integer idUsuario;
 	private Integer idVeiculo;
-	private Integer idMeioPagamento;
+	private Integer meioPagamento;
 	private String dataAluguel;
 	private String dataInicio;
 	private String dataFim;
 	private String status;
 	private BigDecimal valorTotal;
+
+	private String imagemVeiculo;
+
+	private String nomeVeiculo;
+
+	private String fabricanteVeiculo;
+
+	public RentDTO(){
+
+	}
+
+	public RentDTO(Rent rent){
+		this.id = rent.getId();
+		this.status = rent.getStatus().name();
+		this.valorTotal = rent.getValorTotal();
+		this.meioPagamento = rent.getMeioPagamento();
+		this.dataAluguel = DateUtil.timestampToString(rent.getDataAluguel());
+		this.dataInicio = DateUtil.timestampToString(rent.getDataInicio());
+		this.dataFim = DateUtil.timestampToString(rent.getDataFim());
+		this.imagemVeiculo = rent.getVeiculo().getImagem();
+		this.nomeVeiculo = rent.getVeiculo().getNome();
+		this.fabricanteVeiculo = rent.getVeiculo().getFabricante();
+	}
+
+	public void setImagemVeiculo(String imagemVeiculo) {
+		this.imagemVeiculo = imagemVeiculo;
+	}
+
+	public String getNomeVeiculo() {
+		return nomeVeiculo;
+	}
+
+	public void setNomeVeiculo(String nomeVeiculo) {
+		this.nomeVeiculo = nomeVeiculo;
+	}
+
+	public String getFabricanteVeiculo() {
+		return fabricanteVeiculo;
+	}
+
+	public void setFabricanteVeiculo(String fabricanteVeiculo) {
+		this.fabricanteVeiculo = fabricanteVeiculo;
+	}
+
+	public String getImagemVeiculo(){
+		return this.imagemVeiculo;
+	}
 
 	public Integer getId() {
 		return id;
@@ -38,12 +87,12 @@ public class RentDTO {
 		this.idVeiculo = idVeiculo;
 	}
 
-	public Integer getIdMeioPagamento() {
-		return idMeioPagamento;
+	public Integer getMeioPagamento() {
+		return meioPagamento;
 	}
 
-	public void setIdMeioPagamento(Integer idMeioPagamento) {
-		this.idMeioPagamento = idMeioPagamento;
+	public void setMeioPagamento(Integer meioPagamento) {
+		this.meioPagamento = meioPagamento;
 	}
 
 	public String getDataAluguel() {

@@ -1,7 +1,7 @@
 package com.api.aluguelcarro.controller;
 
 import com.api.aluguelcarro.model.Endereco;
-import com.api.aluguelcarro.service.EnderecoService;
+import com.api.aluguelcarro.service.IEnderecoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class EnderecoController {
 
     @Autowired
-    EnderecoService service;
+    IEnderecoService service;
 
     @Operation(summary = "Busca Endereço por usuário", description = "Busca endereço do usuário pelo ID.")
     @GetMapping("/{id}")

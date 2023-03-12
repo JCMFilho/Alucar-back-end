@@ -14,5 +14,5 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
 	@Modifying(clearAutomatically = true)
 	@Query("update User usu set usu.phone =:phone, usu.name =:name , usu.cpf =:cpf where usu.id =:id")
-	void updateUser(@Param("id") Long id, @Param("phone") String phone, @Param("cpf") String cpf, @Param("name") String name);
+	void updateUser(@Param("id") Integer id, @Param("phone") String phone, @Param("cpf") String cpf, @Param("name") String name);
 }

@@ -2,40 +2,77 @@ package com.api.aluguelcarro.model;
 
 public class RatingDTO {
 
-	private UserDTO usuario;
-	private Integer idVeiculo;
-	private int nota;
-	private String descricao;
+	private Integer id;
+	private Integer usuarioId;
+	private String usuario;
+	private Integer veiculoId;
+	private Integer nota;
+	private String titulo;
+	private String descricaoAvaliacao;
 
-	public UserDTO getUsuario() {
+	public RatingDTO(){}
+
+	public RatingDTO(Rating rating){
+		this.id = rating.getId();
+		this.nota = rating.getNota();
+		this.titulo = rating.getTitulo();
+		this.usuarioId = rating.getUsuario().getId();
+		this.usuario = rating.getUsuario().getName();
+		this.descricaoAvaliacao = rating.getDescricaoAvaliacao();
+	}
+	public String getUsuario() {
 		return usuario;
 	}
 
-	public void setUsuario(UserDTO usuario) {
+	public void setUsuario(String usuario) {
 		this.usuario = usuario;
 	}
 
-	public Integer getIdVeiculo() {
-		return idVeiculo;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setIdVeiculo(Integer idVeiculo) {
-		this.idVeiculo = idVeiculo;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public int getNota() {
+	public Integer getUsuarioId() {
+		return usuarioId;
+	}
+
+	public void setUsuarioId(Integer usuarioId) {
+		this.usuarioId = usuarioId;
+	}
+
+	public Integer getVeiculoId() {
+		return veiculoId;
+	}
+
+	public void setVeiculoId(Integer veiculoId) {
+		this.veiculoId = veiculoId;
+	}
+
+	public Integer getNota() {
 		return nota;
 	}
 
-	public void setNota(int nota) {
+	public void setNota(Integer nota) {
 		this.nota = nota;
 	}
 
-	public String getDescricao() {
-		return descricao;
+	public String getTitulo() {
+		return titulo;
 	}
 
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
+	}
+
+	public String getDescricaoAvaliacao() {
+		return descricaoAvaliacao;
+	}
+
+	public void setDescricaoAvaliacao(String descricaoAvaliacao) {
+		this.descricaoAvaliacao = descricaoAvaliacao;
 	}
 }

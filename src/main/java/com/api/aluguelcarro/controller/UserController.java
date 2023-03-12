@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.aluguelcarro.model.UserDTO;
 import com.api.aluguelcarro.service.MyUserDetailsService;
-import com.api.aluguelcarro.service.UserService;
+import com.api.aluguelcarro.service.IUserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,18 +33,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UserController {
 
 	@Autowired
-	private UserService userService;
+	private IUserService IUserService;
 	
 	@Autowired
 	private MyUserDetailsService service;
-
-	@Operation(summary = "Busca lista de usuários", description = "Busca a lista de usuários do sistema, ordenado pela data de criação.")
-	@GetMapping("")
-	public List<UserDTO> searchUser(@RequestParam(value = "cidade", required = false) String cidade,
-			@Parameter(description = "Data inicial da pesquisa no formato dd/MM/YYYY") @RequestParam("dataInicio") String dataInicio,
-			@Parameter(description = "Data final da pesquisa no formato dd/MM/YYYY") @RequestParam("dataFim") String dataFim) {
-		return userService.getUsers();
-	}
 
 	@Operation(summary = "Busca Usuário", description = "Busca usuário pelo email.")
 	@GetMapping("/{email}")
@@ -56,7 +48,7 @@ public class UserController {
 	@PostMapping("")
 	@ResponseStatus(HttpStatus.CREATED)
 	public User registerUser(@RequestBody User usuario) {
-		return userService.saveUser(usuario);
+		return IUserService.saveUser(usuario);
 	}
 
 
@@ -64,19 +56,19 @@ public class UserController {
 	@PostMapping("/change-password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void changePassword(@RequestParam("email") String email, @RequestParam("senha") String senha) {
-		userService.changePassword(email,senha);
+		IUserService.changePassword(email,senha);
 	}
 
 	@Operation(summary = "Atualizar usuário", description = "Atualiza informações do usuário")
 	@PutMapping("")
 	public void updateUser(@RequestBody User user) {
-		userService.updateUser(user);
+		IUserService.updateUser(user);
 	}
 
 	@Operation(summary = "Recuperar senha", description = "Recuperar a senha do usuário do sistema")
 	@PostMapping("/recover")
 	public int recoverPassword(@RequestBody String email) throws EmailSenderException {
-		return userService.recoverPassword(email);
+		return IUserService.recoverPassword(email);
 	}
 
 }

@@ -4,7 +4,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.api.aluguelcarro.exception.ValidationException;
+import com.api.aluguelcarro.model.Rating;
+import com.api.aluguelcarro.service.IRatingService;
+import com.api.aluguelcarro.utils.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,30 +32,21 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @CrossOrigin
 public class RatingController {
 
-	@Operation(summary = "Buscar avaliações por veículo", description = "Busca todas as availiações pelo ID do veículo.")
-	@GetMapping("/{idVeiculo}")
-	public List<RatingDTO> searchEvaluationsByVehicle(@PathVariable("idVeiculo") Integer idVeiculo) {
-		RatingDTO evaluation = new RatingDTO();
-		UserDTO u = new UserDTO();
-		u.setEmail("queijo@queijo.com");
-		u.setId(2);
-		u.setNome("Joãozinho");
-		u.setCidade("Belo Horizonte");
-		u.setDataCadastro("19/05/2022");
-		evaluation.setUsuario(u);
-		evaluation.setDescricao("Muito bom mesmo, bagulho sensacional");
-		evaluation.setNota(5);
-		evaluation.setIdVeiculo(12);
-		List<RatingDTO> evaluations = new ArrayList<>();
-		evaluations.add(evaluation);
-
-		return evaluations;
-	}
+	@Autowired
+	private IRatingService service;
 
 	@Operation(summary = "Cadastrar avaliação", description = "Cadastrar nova avaliação para o veículo")
 	@PostMapping("")
+	@Secured({Constants.ROLE_CLIENT})
 	@ResponseStatus(HttpStatus.CREATED)
-	public RatingDTO saveEvaluation(@RequestBody RatingDTO avaliacao) {
-		return avaliacao;
+	public void saveEvaluation(@RequestBody RatingDTO ratingDTO) throws ValidationException {
+		service.saveRating(ratingDTO);
+	}
+
+	@Operation(summary = "Listar avaliações", description = "Listar todas as avaliações por veículo")
+	@GetMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public List<RatingDTO> listarAvaliacoes(@PathVariable("id") Integer id) throws ValidationException {
+		return service.listRatingsByVehicleId(id);
 	}
 }

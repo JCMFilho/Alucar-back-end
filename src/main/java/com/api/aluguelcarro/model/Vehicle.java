@@ -3,6 +3,7 @@ package com.api.aluguelcarro.model;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -76,6 +77,10 @@ public class Vehicle {
 	@OneToMany(mappedBy = "vehicle")
 	private Set<VehicleItem> itemVeiculos;
 
+
+	@OneToMany(mappedBy = "veiculo")
+	private Set<Rating> ratings;
+
 	public Vehicle(){
 
 	}
@@ -94,6 +99,16 @@ public class Vehicle {
 		this.diaria = diaria;
 		this.imagem = imagem;
 		this.cor = cor;
+		this.itemVeiculos = new HashSet<>();
+		this.ratings = new HashSet<>();
+	}
+
+	public Set<Rating> getRatings() {
+		return ratings;
+	}
+
+	public void setRatings(Set<Rating> ratings) {
+		this.ratings = ratings;
 	}
 
 	public String getFabricante() {

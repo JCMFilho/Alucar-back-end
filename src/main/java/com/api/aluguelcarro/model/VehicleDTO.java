@@ -2,10 +2,13 @@ package com.api.aluguelcarro.model;
 
 import javax.persistence.Column;
 import javax.persistence.OneToMany;
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.Base64;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.zip.Deflater;
 
 public class VehicleDTO {
 
@@ -24,6 +27,10 @@ public class VehicleDTO {
     private String imagem;
     private String cor;
     private Set<VehicleItem> itemVeiculos;
+
+    private Set<RatingDTO> ratings;
+
+
 
     public VehicleDTO(Vehicle vehicle){
         this.id = vehicle.getId();
@@ -46,8 +53,23 @@ public class VehicleDTO {
             vehicleItem.setDescricao(item.getDescricao());
             return vehicleItem;
         }).collect(Collectors.toSet());
+        this.ratings = vehicle.getRatings().stream().map(item -> {
+            RatingDTO rating = new RatingDTO();
+            rating.setDescricaoAvaliacao(item.getDescricaoAvaliacao());
+            rating.setNota(item.getNota());
+            rating.setTitulo(item.getTitulo());
+            rating.setUsuario(item.getUsuario().getName());
+            return rating;
+        }).collect(Collectors.toSet());
     }
 
+    public Set<RatingDTO> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(Set<RatingDTO> ratings) {
+        this.ratings = ratings;
+    }
     public Integer getId() {
         return id;
     }

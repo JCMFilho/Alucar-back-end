@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.api.aluguelcarro.model.VehicleDTO;
+import com.api.aluguelcarro.service.IVehicleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +24,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("/api/vehicle")
 public class VehicleController {
 
-    private final VehicleService service;
+    @Autowired
+    private IVehicleService service;
 
-    public VehicleController(VehicleService service) {
-        this.service = service;
-    }
 
     @Operation(summary = "Busca veículo por ID", description = "Busca veículos por ID e retorna informações do veículo e de seus itens.")
     @GetMapping("/{id}")

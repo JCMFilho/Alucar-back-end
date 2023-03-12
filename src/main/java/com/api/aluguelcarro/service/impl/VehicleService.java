@@ -26,6 +26,9 @@ public class VehicleService implements IVehicleService {
     @Autowired
     VehicleItemRepository itemRepository;
 
+//    @Autowired
+//    ImgurService saver;
+
     @Override
     public Vehicle saveVehicle(Vehicle veiculo) {
         Vehicle vehicleToSave = new Vehicle(veiculo.getId(), veiculo.getNome(), veiculo.getCidade(), veiculo.getAno(), veiculo.getKm(), veiculo.getCambio(), veiculo.getFabricante(), StringUtils.isEmpty(veiculo.getData()) ? DateUtil.getCurrentDate() : veiculo.getData(), veiculo.getCarroceria(), veiculo.getCombustivel(), veiculo.getFinalPlaca(), veiculo.getDiaria(), veiculo.getImagem(), veiculo.getCor());
@@ -39,6 +42,11 @@ public class VehicleService implements IVehicleService {
             return itemVeiculo;
         }).collect(Collectors.toSet());
         itemRepository.saveAll(items);
+//        try {
+//            System.out.println(saver.uploadImage(vehicleToSave.getImagem().split(",")[1]));
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
         return vehicleToSave;
     }
 
@@ -54,10 +62,7 @@ public class VehicleService implements IVehicleService {
 
     @Override
     public List<VehicleDTO> getVehicles(String nome, String cidade, String fabricante) {
-        List<Vehicle> vehicles = new ArrayList<>();
-
-        vehicles = repository.getVehiclesByFilter(nome, cidade, fabricante);
-
+        List<Vehicle> vehicles = repository.getVehiclesByFilter(nome, cidade, fabricante);
         return vehicles.stream().map(VehicleDTO::new).collect(Collectors.toList());
     }
 
